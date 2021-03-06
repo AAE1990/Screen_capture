@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Screen Capture</title>
+	<style>
+		#video {
+			width: 98%;
+			height: 98%;
+			border: 1px solid #999;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1 style="text-align: center;">Использование интерфейса Screen Capture API</h1>
+
+	<button id="start">Start Capture</button>
+
+	<button id="stop">Stop Capture</button>
+
+	<video id="video" autoplay></video>
+
+	<script>
+		const videoElement = document.getElementById("video")
+		const start = document.getElementById("start")
+		const stop = document.getElementById("stop")
+
+		var displayMediaOptions = {
+			video: {
+				cursor: 'always'// Курсор мыши всегда захватывается в результирующий поток
+			},
+			audio: false //может быть true
+		}
+
+		start.addEventListener("click", function (e) {
+			startCapture()
+		}, false)
+
+		stop.addEventListener("click", function (e) {
+			stopCapture()
+		}, false)
+
+		async function startCapture() {
+
+			try {
+
+				videoElement.srcObject = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions) // для захвата веб камеры, нужно написать getUserMedia
+
+			} catch (err) {
+				console.error("Error" + err)
+			}
+		}
+
+		function stopCapture(e) {
+			let tracks = videoElement.srcObject.getTracks()
+
+			tracks.forEach(track => track.stop())
+
+			videoElement.srcObject = null
+		}
+	</script>
+
+</body>
